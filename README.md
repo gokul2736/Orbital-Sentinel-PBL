@@ -130,6 +130,76 @@ https://time.com/article/2026/04/16/space-debris-satellites-growing-risk/
 
 
 
+
+                    Space-Track API
+                    ESA Dataset
+                    Future APIs
+                          │
+                          ▼
+                Data Ingestion Layer
+                          │
+                          ▼
+                  CDM Parsing Layer
+                          │
+                          ▼
+               Feature Engineering
+                          │
+                          ▼
+                 Data Preprocessing
+                          │
+          ┌───────────────┼───────────────┐
+          ▼               ▼               ▼
+     Classification   Regression    Clustering
+          │               │               │
+          └───────────────┼───────────────┘
+                          ▼
+                 Monte Carlo Simulation
+                          │
+                          ▼
+                Decision Fusion Engine
+                          │
+                          ▼
+             Explainability (SHAP)
+                          │
+                          ▼
+          Confidence & Manual Verification
+                          │
+                          ▼
+              Dashboard / Digital Twin
+
+
+
+
+```
+Orbital Sentinel v2
+
+↓
+
+Live CDMs
+
+↓
+
+Automatic Monitoring
+
+↓
+
+3D Orbit Replay
+
+↓
+
+Mission Planning
+
+↓
+
+Satellite Health
+
+↓
+
+Collision Avoidance Suggestions
+```
+
+
+
 # Table of Contents
 
 - Abstract
