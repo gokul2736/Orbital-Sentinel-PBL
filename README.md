@@ -92,3 +92,11 @@ SAT_2_EXCL_VOL                     =3.00
                      │ • Reports                    │
                      └──────────────────────────────┘
 ```
+
+## Sources
+https://kelvins.esa.int/collision-avoidance-challenge/data/
+https://docs.poliastro.space/en/stable/
+https://ui.adsabs.harvard.edu/abs/2021spde.confE.105D/abstract
+https://geospatialworld.net/blogs/do-you-know-how-many-satellites-Earth/
+https://www.discovermagazine.com/about-15-000-satellites-are-circling-earth-and-they-re-disrupting-the-sky-48550
+https://time.com/article/2026/04/16/space-debris-satellites-growing-risk/
