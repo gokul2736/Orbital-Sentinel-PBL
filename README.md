@@ -1,6 +1,33 @@
 # Orbital-Sentinel-PBL
 An Automated Machine Learning Triage System for Space Debris Conjunction Analysis
 
+# Table of Contents
+- [Abstract](#abstract)
+- [Motivation](#motivation)
+- [Space Situational Awareness Challenge](#space-situational-awareness-challenge)
+- [Problem Statement](#problem-statement)
+- [Research Gap](#research-gap)
+- [Objectives](#objectives)
+- [Key Contributions](#key-contributions)
+- [System Overview](#system-overview)
+- [Architecture Overview](#architecture-overview)
+- [Design Principles](#design-principles)
+- [Technology Stack](#technology-stack)
+- [Data Sources](#data-sources)
+- [Data Engineering Layer](#data-engineering-layer)
+- [AI Prediction Layer](#ai-prediction-layer)
+- [Physics Verification Layer](#physics-verification-layer)
+- [Mission Intelligence Engine](#mission-intelligence-engine)
+- [Digital Twin & Visualization](#digital-twin--visualization)
+- [Explainable AI](#explainable-ai)
+- [Decision Workflow](#decision-workflow)
+- [Safety & Manual Verification Strategy](#safety--manual-verification-strategy)
+- [Experimental Evaluation](#experimental-evaluation)
+- [Results](#results)
+- [Limitations](#limitations)
+- [Future Work](#future-work)
+- [References](#references)
+
 **What is CDM??**
 CDM stands for Conjunction Data Message. It is a standardized digital file format used to alert satellite operators when an active spacecraft and another orbiting object.
 
@@ -100,3 +127,31 @@ https://ui.adsabs.harvard.edu/abs/2021spde.confE.105D/abstract
 https://geospatialworld.net/blogs/do-you-know-how-many-satellites-Earth/
 https://www.discovermagazine.com/about-15-000-satellites-are-circling-earth-and-they-re-disrupting-the-sky-48550
 https://time.com/article/2026/04/16/space-debris-satellites-growing-risk/
+
+
+
+# Table of Contents
+
+- Abstract
+- Motivation
+- Space Situational Awareness Challenge
+- Problem Statement
+- Research Gap
+- Key Contributions
+- System Overview
+- Architecture Overview
+- Design Principles
+- Data Sources
+- Data Engineering Layer
+- AI Prediction Layer
+- Physics Verification Layer
+- Mission Intelligence Engine
+- Digital Twin & Visualization
+- Explainable AI
+- Decision Workflow
+- Safety & Manual Verification Strategy
+- Experimental Evaluation
+- Results
+- Limitations
+- Future Work
+- References
