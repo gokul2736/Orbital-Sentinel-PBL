@@ -226,3 +226,22 @@ Collision Avoidance Suggestions
 - Limitations
 - Future Work
 - References
+
+
+Yes, this is worth doing.
+
+But no, our student project is not going to "solve collision avoidance" better than ESA/NASA.
+
+And that is completely fine.
+
+The mistake would be presenting it as:
+
+"We built an AI system that can autonomously decide when satellites should maneuver."
+
+We haven't, and with this dataset we shouldn't claim that.
+
+The strong version is:
+
+"We developed and evaluated a machine-learning-based conjunction risk prediction and triage prototype using real-world CDM time-series data, designed to prioritize potentially significant conjunctions for human analysis."
+
+That is a legitimate ML project.
