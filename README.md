@@ -198,6 +198,7 @@ Satellite Health
 Collision Avoidance Suggestions
 ```
 
+<img width="913" height="576" alt="image" src="https://github.com/user-attachments/assets/5369998a-78b2-4f3c-82c4-9d85b7a2b893" />
 
 
 # Table of Contents
