@@ -1557,6 +1557,16 @@ EXPLAINABILITY
 VISUALIZATION
 ```
 
+# Global Debries Count
+
+|TYPE| Occupancy | Count |
+|-----|----------|-------|
+|Payloads | 59% | 18,697|
+|Debris   |31% |  9,907|
+|Rocket Bodies | 6% | 2,108|
+|Unknown | 2% |661|
+
+
 ## Cleaned Data
 
 <img width="440" height="285" alt="image" src="https://github.com/user-attachments/assets/31fe3a49-771b-4aa7-8d66-8e1ed0a78c70" />
