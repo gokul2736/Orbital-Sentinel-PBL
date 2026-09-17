@@ -1,0 +1,45 @@
+data:
+  raw_dir: "data/raw/esa_kelvins"
+  train_file: "train_data.csv"
+  test_file: "test_data.csv"
+  processed_dir: "data/processed"
+  cache_dir: "data/cache"
+
+target:
+  column: "risk"
+  description: "log10 collision probability"
+  floor_value: -30.0
+
+features:
+  id_columns:
+    - event_id
+    - mission_id
+  target_columns:
+    - risk
+  leakage_columns:
+    - max_risk_estimate
+    - max_risk_scaling
+  categorical_columns:
+    - c_object_type
+  space_weather_columns:
+    - F10
+    - F3M
+    - SSN
+    - AP
+
+splitting:
+  test_size: 0.2
+  random_state: 42
+  strategy: "event_based"
+
+models:
+  save_dir: "models_saved"
+  random_state: 42
+
+physics:
+  default_combined_radius_m: 20.0
+  monte_carlo_samples: 10000
+
+dashboard:
+  host: "0.0.0.0"
+  port: 8501
