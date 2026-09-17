@@ -1,0 +1,39 @@
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+.venv/
+venv/
+
+# Data (local datasets — distribute separately)
+data/raw/*
+data/interim/*
+data/processed/*
+data/cache/*
+
+# Model artifacts
+models_saved/
+models/checkpoints/
+models/artifacts/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE / editor
+.vs/
+.vscode/
+.idea/
+
+# Temporary / archive
+_archive/

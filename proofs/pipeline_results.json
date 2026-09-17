@@ -1,0 +1,219 @@
+{
+  "validation": {
+    "schema_issues": [],
+    "quality": {
+      "total_rows": 162634,
+      "total_columns": 103,
+      "null_row_count": 65184,
+      "columns_with_nulls": [],
+      "risk_floor_pct": 41.344368336264246,
+      "negative_miss_distance_count": 0,
+      "negative_speed_count": 0,
+      "outlier_columns": [
+        "max_risk_scaling",
+        "relative_velocity_r",
+        "t_time_lastob_start",
+        "t_time_lastob_end",
+        "t_residuals_accepted",
+        "t_weighted_rms",
+        "t_rcs_estimate",
+        "t_cd_area_over_mass",
+        "t_sedr",
+        "t_j2k_ecc",
+        "t_cn_t",
+        "t_crdot_t",
+        "t_crdot_n",
+        "t_ctdot_r",
+        "t_cndot_rdot",
+        "c_recommended_od_span",
+        "c_actual_od_span",
+        "c_obs_available",
+        "c_obs_used",
+        "c_residuals_accepted",
+        "c_weighted_rms",
+        "c_rcs_estimate",
+        "c_cd_area_over_mass",
+        "c_cr_area_over_mass",
+        "c_sedr",
+        "c_j2k_sma",
+        "c_j2k_ecc",
+        "c_crdot_t",
+        "c_span",
+        "c_h_apo",
+        "elevation",
+        "mahalanobis_distance",
+        "F10",
+        "AP"
+      ]
+    }
+  },
+  "model_metrics": {
+    "Ridge": {
+      "train": {
+        "mae": 5.4101880592404195,
+        "rmse": 6.803560055994644,
+        "r2": 0.538274550172871,
+        "median_ae": 4.625928857942437,
+        "max_error": 137.04034706198215,
+        "correlation": 0.7336719769415603
+      },
+      "val": {
+        "mae": 5.456805553707686,
+        "rmse": 6.928410029409316,
+        "r2": 0.5207201041722874,
+        "median_ae": 4.629649039386014,
+        "max_error": 114.01762970719756,
+        "correlation": 0.7219760125009459
+      }
+    },
+    "RandomForest": {
+      "train": {
+        "mae": 0.5465703367926865,
+        "rmse": 1.1947428500745427,
+        "r2": 0.9857616308656545,
+        "median_ae": 0.1311438265269187,
+        "max_error": 14.731356150824908,
+        "correlation": 0.9932020989056592
+      },
+      "val": {
+        "mae": 1.7903027262136584,
+        "rmse": 3.296819627733539,
+        "r2": 0.8914793408431284,
+        "median_ae": 0.6579562136064685,
+        "max_error": 21.98705610988118,
+        "correlation": 0.9444950524543996
+      }
+    },
+    "XGBoost": {
+      "train": {
+        "mae": 0.6433740450109123,
+        "rmse": 1.0544899959253156,
+        "r2": 0.9889083464609791,
+        "median_ae": 0.34087310808375193,
+        "max_error": 10.438526386545536,
+        "correlation": 0.9945669254286389
+      },
+      "val": {
+        "mae": 1.5542938861305915,
+        "rmse": 2.817510583650584,
+        "r2": 0.9207401655326001,
+        "median_ae": 0.6509939294463503,
+        "max_error": 21.818315505981445,
+        "correlation": 0.9597266879947737
+      }
+    }
+  },
+  "evaluation": {
+    "overall": {
+      "mae": 1.5542938861305915,
+      "rmse": 2.817510583650584,
+      "r2": 0.9207401655326001,
+      "median_ae": 0.6509939294463503,
+      "max_error": 21.818315505981445,
+      "correlation": 0.9597266879947737
+    },
+    "by_band": {
+      "floor": {
+        "mae": 1.1322060881159228,
+        "rmse": 2.647933589834842,
+        "r2": -946178600.9045426,
+        "median_ae": 0.23764705657958984,
+        "max_error": 21.818315505981445,
+        "correlation": 0.010488600375031446,
+        "n": 13160
+      },
+      "low": {
+        "mae": 3.0229180692002564,
+        "rmse": 4.072883625985634,
+        "r2": 0.13333404735673537,
+        "median_ae": 2.2421995751451984,
+        "max_error": 16.541837439897947,
+        "correlation": 0.610380079125286,
+        "n": 4104
+      },
+      "medium": {
+        "mae": 1.5061688013261367,
+        "rmse": 2.4161429586480585,
+        "r2": 0.09099867831535557,
+        "median_ae": 0.8886739186460275,
+        "max_error": 20.507459703458462,
+        "correlation": 0.6997213705771368,
+        "n": 10599
+      },
+      "high": {
+        "mae": 1.5633238616775342,
+        "rmse": 2.7728083470466376,
+        "r2": -9.587124035263635,
+        "median_ae": 0.8145639983329032,
+        "max_error": 21.700939437186243,
+        "correlation": 0.3060385410592268,
+        "n": 4155
+      }
+    },
+    "threshold_-5": {
+      "threshold": -5.0,
+      "n_true_positive": 709,
+      "n_pred_positive": 430,
+      "precision": 0.6976744186046512,
+      "recall": 0.4231311706629055,
+      "f1": 0.5267778753292361,
+      "auc": 0.9669011478965231
+    }
+  },
+  "physics_sample_count": 20,
+  "explainability": {
+    "top_features": [
+      {
+        "feature": "miss_distance_sigma_ratio",
+        "mean_abs_shap": 5.327473923567599,
+        "rank": 1
+      },
+      {
+        "feature": "relative_position_r",
+        "mean_abs_shap": 2.186762607924545,
+        "rank": 2
+      },
+      {
+        "feature": "combined_sigma_r",
+        "mean_abs_shap": 1.0269203694264173,
+        "rank": 3
+      },
+      {
+        "feature": "c_sigma_tdot",
+        "mean_abs_shap": 0.9574712789723709,
+        "rank": 4
+      },
+      {
+        "feature": "relative_velocity_t",
+        "mean_abs_shap": 0.660512019630174,
+        "rank": 5
+      },
+      {
+        "feature": "combined_position_uncertainty",
+        "mean_abs_shap": 0.5933015937820866,
+        "rank": 6
+      },
+      {
+        "feature": "relative_speed",
+        "mean_abs_shap": 0.5115920996659438,
+        "rank": 7
+      },
+      {
+        "feature": "mahalanobis_distance",
+        "mean_abs_shap": 0.5079627114060701,
+        "rank": 8
+      },
+      {
+        "feature": "c_sigma_r",
+        "mean_abs_shap": 0.3560826501742495,
+        "rank": 9
+      },
+      {
+        "feature": "miss_to_mahalanobis_ratio",
+        "mean_abs_shap": 0.25845581430594994,
+        "rank": 10
+      }
+    ],
+    "sample_explanation": "This conjunction is assessed as LOW risk (log10(Pc) = -11.0, confidence: 0.65). The primary risk drivers are: miss_distance_sigma_ratio (SHAP contribution: +7.57), combined_sigma_r (SHAP contribution: +2.07), c_sigma_tdot (SHAP contribution: +1.87). Physics verification shows some disagreement (analytic Pc = 10^-14.4, outside ML prediction interval). Manual review is recommended. Recommendation: Continue routine monitoring"
+  }
+}
