@@ -35,5 +35,8 @@ models/artifacts/
 .vscode/
 .idea/
 
+# Claude Code
+.claude/
+
 # Temporary / archive
 _archive/
