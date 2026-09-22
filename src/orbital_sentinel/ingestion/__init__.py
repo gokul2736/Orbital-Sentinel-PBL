@@ -1,1 +1,3 @@
 from orbital_sentinel.ingestion.dataset_loader import load_esa_kelvins, load_both_splits
+from orbital_sentinel.ingestion.cdm_api import SpaceTrackClient
+from orbital_sentinel.ingestion.cdm_mapper import map_cdm_to_esa_format, map_cdm_batch

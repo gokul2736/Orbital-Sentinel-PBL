@@ -43,8 +43,7 @@ def main():
     train_df = load_esa_kelvins(split="train")
     test_df = load_esa_kelvins(split="test")
     print(f"  Train: {train_df.shape[0]:,} rows, {train_df.shape[1]} columns")
-    print(f"  Test:  {test_df.shape[0]:,} rows, {test_df.shap
-                                                 e[1]} columns")
+    print(f"  Test:  {test_df.shape[0]:,} rows, {test_df.shape[1]} columns")
 
     # ── Step 2: Validate ──
     print("\n[2/11] Validating schema and quality...")
