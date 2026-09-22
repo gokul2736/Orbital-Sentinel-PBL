@@ -1,0 +1,16 @@
+.git
+__pycache__
+*.pyc
+*.pyo
+.env
+.venv
+.mypy_cache
+.pytest_cache
+.ruff_cache
+*.egg-info
+node_modules
+.claude
+*.egg
+dist
+build
+.tox

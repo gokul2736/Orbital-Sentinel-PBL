@@ -1,0 +1,58 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+      - ./models_saved:/app/models_saved
+      - ./configs:/app/configs
+      - ./proofs:/app/proofs
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - orbital-sentinel-net
+
+  dashboard:
+    build: .
+    command: python -m streamlit run dashboard/app.py --server.port=8501 --server.address=0.0.0.0
+    ports:
+      - "8501:8501"
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+      - ./models_saved:/app/models_saved
+      - ./configs:/app/configs
+      - ./proofs:/app/proofs
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - orbital-sentinel-net
+
+  pipeline:
+    build: .
+    command: python scripts/run_pipeline.py
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+      - ./models_saved:/app/models_saved
+      - ./configs:/app/configs
+      - ./proofs:/app/proofs
+    profiles:
+      - training
+    networks:
+      - orbital-sentinel-net
+
+networks:
+  orbital-sentinel-net:
+    driver: bridge
