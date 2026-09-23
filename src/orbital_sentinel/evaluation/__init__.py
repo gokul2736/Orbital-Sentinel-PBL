@@ -10,6 +10,15 @@ from orbital_sentinel.evaluation.thresholding import (
     apply_risk_categories,
     find_optimal_threshold,
 )
+from orbital_sentinel.evaluation.cross_validation import (
+    cross_validate_model,
+    compare_models_cv,
+    event_kfold_split,
+)
+from orbital_sentinel.evaluation.threshold_optimization import (
+    multi_threshold_evaluation,
+    optimize_threshold,
+)
 
 __all__ = [
     "evaluate_regression",
@@ -19,4 +28,9 @@ __all__ = [
     "compare_models",
     "find_optimal_threshold",
     "apply_risk_categories",
+    "cross_validate_model",
+    "compare_models_cv",
+    "event_kfold_split",
+    "multi_threshold_evaluation",
+    "optimize_threshold",
 ]

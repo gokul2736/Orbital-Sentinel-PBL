@@ -41,11 +41,12 @@ def train_all_baselines(
     y_val: np.ndarray,
     feature_names: Optional[list] = None,
 ) -> dict:
-    """Train RF, XGB, Ridge baselines. Returns {name: (model, train_metrics, val_metrics)}."""
+    """Train all baseline models. Returns {name: (model, train_metrics, val_metrics)}."""
     from orbital_sentinel.evaluation.metrics import evaluate_regression
     from orbital_sentinel.models.baselines.random_forest import RandomForestModel
     from orbital_sentinel.models.baselines.logistic import RidgeModel
     from orbital_sentinel.models.baselines.xgboost_model import XGBoostModel
+    from orbital_sentinel.models.baselines.lightgbm_model import LightGBMModel
 
     results = {}
 
@@ -71,6 +72,14 @@ def train_all_baselines(
         xgb,
         evaluate_regression(y_train, xgb.predict(X_train)),
         evaluate_regression(y_val, xgb.predict(X_val)),
+    )
+
+    lgbm = LightGBMModel()
+    lgbm.fit(X_train, y_train, eval_set=[(X_val, y_val)])
+    results["LightGBM"] = (
+        lgbm,
+        evaluate_regression(y_train, lgbm.predict(X_train)),
+        evaluate_regression(y_val, lgbm.predict(X_val)),
     )
 
     return results
