@@ -64,10 +64,18 @@ DARK_CSS = """
     --shadow-lg: 0 8px 40px rgba(0,0,0,0.4);
 }
 
-/* ── Hide Streamlit chrome ── */
-#MainMenu, header[data-testid="stHeader"], footer,
+/* ── Hide Streamlit chrome (keep header for sidebar toggle) ── */
+#MainMenu, footer,
 div[data-testid="stToolbar"], div[data-testid="stDecoration"],
 .stDeployButton, #stDecoration { display: none !important; }
+header[data-testid="stHeader"] {
+    background: var(--bg-primary) !important;
+    border-bottom: 1px solid var(--border) !important;
+}
+button[data-testid="stBaseButton-headerNoPadding"],
+button[kind="headerNoPadding"] {
+    color: var(--accent-cyan) !important;
+}
 
 /* ── Base layout ── */
 .main .block-container {
@@ -228,38 +236,55 @@ p, span, div, label { font-family: 'Inter', sans-serif; }
 div[data-testid="stSidebar"] {
     background: linear-gradient(180deg, #080c12 0%, #0c1117 40%, #0e1420 100%) !important;
     border-right: 1px solid var(--border) !important;
+    min-width: 260px !important;
+    width: 280px !important;
 }
 div[data-testid="stSidebar"] > div:first-child { padding-top: 0.4rem; }
 div[data-testid="stSidebar"] .stRadio > label { display: none !important; }
-div[data-testid="stSidebar"] .stRadio > div { gap: 1px !important; }
+div[data-testid="stSidebar"] .stRadio > div { gap: 2px !important; }
 div[data-testid="stSidebar"] .stRadio > div > label {
     background: transparent !important;
     border: none !important;
     border-radius: var(--radius-sm) !important;
-    padding: 9px 14px !important;
+    padding: 10px 16px !important;
     margin: 0 !important;
-    font-size: 0.8rem !important;
+    font-size: 0.85rem !important;
     font-weight: 500 !important;
     color: var(--text-secondary) !important;
     cursor: pointer !important;
     transition: all 0.2s ease !important;
     font-family: 'Inter', sans-serif !important;
-    border-left: 2px solid transparent !important;
+    border-left: 3px solid transparent !important;
 }
 div[data-testid="stSidebar"] .stRadio > div > label:hover {
-    background: rgba(0,212,255,0.04) !important;
+    background: rgba(0,212,255,0.06) !important;
     color: var(--text-primary) !important;
-    border-left-color: rgba(0,212,255,0.3) !important;
+    border-left-color: rgba(0,212,255,0.4) !important;
 }
 div[data-testid="stSidebar"] .stRadio > div > label[data-checked="true"],
 div[data-testid="stSidebar"] .stRadio > div > label:has(input:checked) {
-    background: rgba(0,212,255,0.07) !important;
+    background: rgba(0,212,255,0.10) !important;
     color: var(--accent-cyan) !important;
-    border-left: 2px solid var(--accent-cyan) !important;
-    font-weight: 600 !important;
+    border-left: 3px solid var(--accent-cyan) !important;
+    font-weight: 700 !important;
+    box-shadow: inset 0 0 20px rgba(0,212,255,0.04);
 }
 div[data-testid="stSidebar"] .stRadio > div > label > div:first-child {
     display: none !important;
+}
+/* Sidebar collapse button styling */
+button[data-testid="stSidebarCollapseButton"],
+div[data-testid="stSidebarCollapsedControl"] button {
+    color: var(--accent-cyan) !important;
+    background: rgba(0,212,255,0.08) !important;
+    border: 1px solid rgba(0,212,255,0.2) !important;
+    border-radius: 6px !important;
+}
+@media (min-width: 768px) {
+    div[data-testid="stSidebar"] {
+        display: block !important;
+        transform: none !important;
+    }
 }
 
 /* ── Tabs ── */
@@ -734,6 +759,7 @@ with st.sidebar:
             "Risk Assessment",
             "Event Timeline",
             "Orbit Simulation",
+            "Orbital Tracker",
             "Data Explorer",
             "Model Performance",
             "Feature Importance",
@@ -768,7 +794,7 @@ with st.sidebar:
                 <span>PHYSICS</span><span style="color:#6e7d8f;">Monte Carlo</span>
             </div>
             <div style="display:flex; justify-content:space-between;">
-                <span>PAGES</span><span style="color:#6e7d8f;">13 Modules</span>
+                <span>PAGES</span><span style="color:#6e7d8f;">14 Modules</span>
             </div>
         </div>
     </div>
@@ -2002,6 +2028,15 @@ elif page == "Orbit Simulation":
             margin=dict(l=50, r=20, t=10, b=40),
         )
         st.plotly_chart(fig_rtn, use_container_width=True)
+
+
+# ===================================================================
+# Page — Orbital Tracker
+# ===================================================================
+
+elif page == "Orbital Tracker":
+    from pages.orbital_tracker import render_orbital_tracker
+    render_orbital_tracker()
 
 
 # ===================================================================

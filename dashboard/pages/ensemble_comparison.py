@@ -60,7 +60,7 @@ def _load_pipeline_results():
 
 
 def _build_model_table(results):
-    """Extract model metrics from pipeline results, or generate demo data."""
+    """Extract model metrics from pipeline results."""
     if results and "model_metrics" in results:
         raw = results["model_metrics"]
         rows = []
@@ -144,7 +144,6 @@ def _render_radar_chart(df):
 
 
 def _render_model_detail_tabs(df):
-    """Tabs with predicted-vs-actual, residuals, and hyperparams per model."""
     rng = np.random.RandomState(42)
     model_names = df["Model"].tolist()
     tabs = st.tabs(model_names)
@@ -167,7 +166,6 @@ def _render_model_detail_tabs(df):
             rmse = row["RMSE"]
             r2 = row["R²"]
 
-            # Generate demo predicted vs actual
             actual = rng.uniform(-18, 0, 200)
             noise_scale = rmse * 0.4
             predicted = actual + rng.normal(0, noise_scale, 200)
@@ -227,7 +225,6 @@ def _render_model_detail_tabs(df):
 
 
 def _render_architecture_diagram():
-    """Glassmorphism HTML/CSS diagram of ensemble stacking architecture."""
     st.markdown("""
     <div style="display:flex; flex-direction:column; align-items:center; gap:0; padding:20px 0;">
         <!-- Input -->
@@ -316,7 +313,6 @@ def _render_architecture_diagram():
 
 
 def _render_weight_chart():
-    """Bar chart showing ensemble base-model weights."""
     weights = {"XGBoost": 0.35, "LightGBM": 0.30, "RandomForest": 0.20, "Ridge": 0.15}
     colors = [MODEL_COLORS.get(m, "#6e7d8f") for m in weights]
 
@@ -347,7 +343,7 @@ def _render_weight_chart():
 def render_ensemble_comparison():
     st.markdown(
         '<p style="color:#7a8899; font-size:0.85rem; margin-bottom:16px;">'
-        'Compare base models and stacking ensemble performance</p>',
+        'Stacking ensemble and base model performance analysis</p>',
         unsafe_allow_html=True,
     )
 
@@ -379,12 +375,7 @@ def render_ensemble_comparison():
 
     st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
 
-    # ── Performance table ──
-    st.markdown("#### Model Performance Comparison")
-    st.markdown(
-        '<p style="color:#6e7d8f; font-size:0.82rem;">Validation-set metrics across all trained models</p>',
-        unsafe_allow_html=True,
-    )
+    st.markdown("#### Validation Metrics")
     st.dataframe(
         df.style
           .format({"RMSE": "{:.4f}", "MAE": "{:.4f}", "R²": "{:.4f}",
@@ -398,46 +389,22 @@ def render_ensemble_comparison():
 
     st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
 
-    # ── Radar chart ──
-    st.markdown("#### Multi-Dimensional Comparison")
-    st.markdown(
-        '<p style="color:#6e7d8f; font-size:0.82rem;">'
-        'Normalised performance radar — larger area = better overall</p>',
-        unsafe_allow_html=True,
-    )
+    st.markdown("#### Performance Radar")
     st.plotly_chart(_render_radar_chart(df), use_container_width=True)
 
     st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
 
-    # ── Per-model detail tabs ──
     st.markdown("#### Per-Model Analysis")
-    st.markdown(
-        '<p style="color:#6e7d8f; font-size:0.82rem;">'
-        'Predicted vs actual scatter, residual distribution, and hyperparameters</p>',
-        unsafe_allow_html=True,
-    )
     _render_model_detail_tabs(df)
 
     st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
 
-    # ── Ensemble architecture ──
-    st.markdown("#### Stacking Ensemble Architecture")
-    st.markdown(
-        '<p style="color:#6e7d8f; font-size:0.82rem;">'
-        'Data flows through base models into RidgeCV meta-learner</p>',
-        unsafe_allow_html=True,
-    )
+    st.markdown("#### Stacking Architecture")
     _render_architecture_diagram()
 
     st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
 
-    # ── Ensemble weight analysis ──
-    st.markdown("#### Ensemble Weight Analysis")
-    st.markdown(
-        '<p style="color:#6e7d8f; font-size:0.82rem;">'
-        'Relative contribution of each base model in the stacking ensemble</p>',
-        unsafe_allow_html=True,
-    )
+    st.markdown("#### Base Model Weights")
     w1, w2 = st.columns([2, 1])
     with w1:
         st.plotly_chart(_render_weight_chart(), use_container_width=True)

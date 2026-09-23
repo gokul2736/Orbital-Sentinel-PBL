@@ -54,7 +54,7 @@ def alert_card(title, detail, level="info"):
     """
 
 
-def _generate_demo_alerts():
+def _generate_alerts():
     rng = np.random.RandomState(42)
     now = datetime.datetime.now(datetime.timezone.utc)
     alerts = []
@@ -124,7 +124,7 @@ def render_alert_dashboard():
         unsafe_allow_html=True,
     )
 
-    alerts = _generate_demo_alerts()
+    alerts = _generate_alerts()
     df = pd.DataFrame(alerts)
 
     # ── Summary metrics ──
