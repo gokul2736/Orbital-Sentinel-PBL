@@ -280,11 +280,39 @@ div[data-testid="stSidebarCollapsedControl"] button {
     border: 1px solid rgba(0,212,255,0.2) !important;
     border-radius: 6px !important;
 }
+/* Force sidebar always visible on desktop */
 @media (min-width: 768px) {
     div[data-testid="stSidebar"] {
         display: block !important;
         transform: none !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative !important;
+        z-index: 999 !important;
     }
+    section[data-testid="stSidebar"] {
+        display: flex !important;
+        transform: none !important;
+        visibility: visible !important;
+        width: 280px !important;
+        min-width: 260px !important;
+    }
+    div[data-testid="stSidebarCollapsedControl"] {
+        display: none !important;
+    }
+}
+/* Also ensure collapsed state is overridden */
+div[data-testid="stSidebar"][aria-expanded="false"] {
+    display: block !important;
+    transform: none !important;
+    margin-left: 0 !important;
+    width: 280px !important;
+}
+section[data-testid="stSidebar"][aria-expanded="false"] {
+    display: flex !important;
+    transform: none !important;
+    margin-left: 0 !important;
+    width: 280px !important;
 }
 
 /* ── Tabs ── */
@@ -825,6 +853,19 @@ st.markdown(f"""
             </span>
         </div>
     </div>
+</div>
+""", unsafe_allow_html=True)
+
+# ---------------------------------------------------------------------------
+# Current page indicator (always visible)
+# ---------------------------------------------------------------------------
+st.markdown(f"""
+<div style="display:flex; align-items:center; gap:12px; padding:6px 0 2px;
+            font-family:'JetBrains Mono',monospace; font-size:0.7rem;">
+    <span style="color:#3d4f63;">PAGE</span>
+    <span style="color:#00D4FF; font-weight:600; letter-spacing:0.04em;">{page.upper()}</span>
+    <span style="color:#243044;">|</span>
+    <span style="color:#3d4f63;">Use the sidebar on the left to switch pages</span>
 </div>
 """, unsafe_allow_html=True)
 
@@ -2035,7 +2076,7 @@ elif page == "Orbit Simulation":
 # ===================================================================
 
 elif page == "Orbital Tracker":
-    from pages.orbital_tracker import render_orbital_tracker
+    from _pages.orbital_tracker import render_orbital_tracker
     render_orbital_tracker()
 
 
@@ -2716,7 +2757,7 @@ elif page == "Data Explorer":
 # ===================================================================
 
 elif page == "Ensemble Comparison":
-    from pages.ensemble_comparison import render_ensemble_comparison
+    from _pages.ensemble_comparison import render_ensemble_comparison
     render_ensemble_comparison()
 
 
@@ -2725,7 +2766,7 @@ elif page == "Ensemble Comparison":
 # ===================================================================
 
 elif page == "Alert Dashboard":
-    from pages.alert_dashboard import render_alert_dashboard
+    from _pages.alert_dashboard import render_alert_dashboard
     render_alert_dashboard()
 
 
@@ -2734,7 +2775,7 @@ elif page == "Alert Dashboard":
 # ===================================================================
 
 elif page == "Report Generator":
-    from pages.report_generator import render_report_generator
+    from _pages.report_generator import render_report_generator
     render_report_generator()
 
 
@@ -2743,5 +2784,5 @@ elif page == "Report Generator":
 # ===================================================================
 
 elif page == "System Status":
-    from pages.system_status import render_system_status
+    from _pages.system_status import render_system_status
     render_system_status()

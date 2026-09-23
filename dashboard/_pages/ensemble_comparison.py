@@ -10,7 +10,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 MODELS_DIR = PROJECT_ROOT / "models_saved"
 PROOFS_DIR = PROJECT_ROOT / "proofs"
 DATA_DIR = PROJECT_ROOT / "data" / "raw" / "esa_kelvins"
