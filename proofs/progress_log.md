@@ -46,6 +46,19 @@
 - GitHub Actions CI/CD pipeline
 - pyproject.toml packaging with console script entry point
 
+## Phase 7: Advanced ML & Extended Dashboard
+- Stacking ensemble model combining XGBoost, LightGBM, RF, Ridge via RidgeCV meta-learner
+- Event-based K-fold cross-validation to prevent data leakage
+- Optuna hyperparameter tuning for XGBoost, LightGBM, Random Forest
+- SHAP-based and variance/correlation feature selection
+- Binary threshold optimization (F1, F2, precision, recall targets)
+- Multi-threshold evaluation at operational decision points
+- Dashboard expanded from 9 to 13 pages:
+  - Ensemble Comparison: model radar chart, per-model scatter/residual tabs, architecture diagram, weight analysis
+  - Alert Dashboard: active alert panel with severity, timeline scatter, donut/stacked breakdown, rule config
+  - Report Generator: conjunction/model/timeline reports with HTML preview and export
+  - System Status: health monitoring, dependency check, module inventory, performance gauges
+
 ## Test Coverage
-- 135 tests across 15 test modules, all passing
-- Coverage: ingestion, preprocessing, features, models, evaluation, physics, fusion, uncertainty, explainability, API, database, reporting, alerts
+- 148 tests across 16 test modules
+- Coverage: ingestion, preprocessing, features, models, evaluation, physics, fusion, uncertainty, explainability, API, database, reporting, alerts, ensemble, cross-validation, threshold optimization

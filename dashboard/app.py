@@ -737,7 +737,11 @@ with st.sidebar:
             "Data Explorer",
             "Model Performance",
             "Feature Importance",
+            "Ensemble Comparison",
             "Physics Lab",
+            "Alert Dashboard",
+            "Report Generator",
+            "System Status",
         ],
         label_visibility="collapsed",
     )
@@ -758,10 +762,13 @@ with st.sidebar:
                 <span>DATA</span><span style="color:#6e7d8f;">Space-Track + ESA</span>
             </div>
             <div style="display:flex; justify-content:space-between;">
-                <span>MODELS</span><span style="color:#6e7d8f;">4 Ensemble</span>
+                <span>MODELS</span><span style="color:#6e7d8f;">5 Stacking</span>
             </div>
             <div style="display:flex; justify-content:space-between;">
                 <span>PHYSICS</span><span style="color:#6e7d8f;">Monte Carlo</span>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+                <span>PAGES</span><span style="color:#6e7d8f;">13 Modules</span>
             </div>
         </div>
     </div>
@@ -2667,3 +2674,39 @@ elif page == "Data Explorer":
                 yaxis=dict(tickfont=dict(size=11)),
             )
             st.plotly_chart(fig_corr, use_container_width=True)
+
+
+# ===================================================================
+# Page — Ensemble Comparison
+# ===================================================================
+
+elif page == "Ensemble Comparison":
+    from pages.ensemble_comparison import render_ensemble_comparison
+    render_ensemble_comparison()
+
+
+# ===================================================================
+# Page — Alert Dashboard
+# ===================================================================
+
+elif page == "Alert Dashboard":
+    from pages.alert_dashboard import render_alert_dashboard
+    render_alert_dashboard()
+
+
+# ===================================================================
+# Page — Report Generator
+# ===================================================================
+
+elif page == "Report Generator":
+    from pages.report_generator import render_report_generator
+    render_report_generator()
+
+
+# ===================================================================
+# Page — System Status
+# ===================================================================
+
+elif page == "System Status":
+    from pages.system_status import render_system_status
+    render_system_status()
