@@ -70,7 +70,7 @@ def _derive_raan_argp(row, prefix):
     return raan, argp
 
 
-def create_earth_sphere(n_points: int = 60) -> tuple:
+def create_earth_sphere(n_points: int = 80) -> tuple:
     u = np.linspace(0, 2 * np.pi, n_points)
     v = np.linspace(0, np.pi, n_points)
     x = R_EARTH_KM * np.outer(np.cos(u), np.sin(v))
@@ -79,48 +79,81 @@ def create_earth_sphere(n_points: int = 60) -> tuple:
     return x, y, z
 
 
-def _earth_surface_color(n_points: int = 60) -> np.ndarray:
-    """Generate a latitude/longitude-based color map that resembles Earth."""
+def create_atmosphere_sphere(scale: float = 1.025, n_points: int = 40) -> tuple:
+    """Slightly larger transparent sphere for atmospheric glow."""
+    r = R_EARTH_KM * scale
+    u = np.linspace(0, 2 * np.pi, n_points)
+    v = np.linspace(0, np.pi, n_points)
+    x = r * np.outer(np.cos(u), np.sin(v))
+    y = r * np.outer(np.sin(u), np.sin(v))
+    z = r * np.outer(np.ones_like(u), np.cos(v))
+    return x, y, z
+
+
+def _earth_surface_color(n_points: int = 80) -> np.ndarray:
+    """Generate a realistic latitude/longitude-based color map for Earth."""
     u = np.linspace(0, 2 * np.pi, n_points)
     v = np.linspace(0, np.pi, n_points)
     lon, lat = np.meshgrid(u, v, indexing="ij")
     lat_deg = 90 - np.degrees(lat)
+    lon_deg = np.degrees(lon)
 
     color = np.zeros_like(lat)
 
     ocean_mask = np.ones_like(lat, dtype=bool)
-    bands = [
+
+    continents = [
         ((-10, 30), (0.3, 1.8)),
         ((-10, 25), (3.5, 5.0)),
         ((20, 70), (0.0, 2.5)),
         ((35, 72), (0.8, 3.2)),
         ((-35, -15), (4.8, 5.8)),
         ((-55, -10), (5.0, 6.28)),
+        ((10, 40), (1.8, 2.8)),
+        ((25, 55), (1.0, 2.2)),
+        ((-45, -10), (5.2, 6.0)),
         ((60, 85), (0.0, 6.28)),
         ((-90, -60), (0.0, 6.28)),
     ]
-    for (lat_lo, lat_hi), (lon_lo, lon_hi) in bands:
+    for (lat_lo, lat_hi), (lon_lo, lon_hi) in continents:
         mask = (lat_deg >= lat_lo) & (lat_deg <= lat_hi) & (lon >= lon_lo) & (lon <= lon_hi)
         ocean_mask[mask] = False
-        color[mask] = 0.6 + 0.2 * np.sin(lat_deg[mask] * 0.05)
+        base = np.where(np.abs(lat_deg[mask]) < 25, 0.55, 0.65)
+        color[mask] = base + 0.15 * np.sin(lat_deg[mask] * 0.04) + 0.05 * np.sin(lon_deg[mask] * 0.06)
 
-    color[ocean_mask] = 0.15 + 0.1 * np.sin(lat_deg[ocean_mask] * 0.03)
+    polar_mask = np.abs(lat_deg) > 65
+    color[polar_mask & ~ocean_mask] = 0.88 + 0.07 * np.cos(lat_deg[polar_mask & ~ocean_mask] * 0.02)
+    color[polar_mask & ocean_mask] = 0.82 + 0.05 * np.cos(lat_deg[polar_mask & ocean_mask] * 0.02)
+    ocean_mask[polar_mask] = False
 
-    return color
+    depth = 0.12 + 0.08 * np.sin(lat_deg * 0.025 + 0.5) + 0.04 * np.sin(lon_deg * 0.03)
+    color[ocean_mask] = depth[ocean_mask]
+
+    return np.clip(color, 0.0, 1.0)
 
 
 EARTH_COLORSCALE = [
-    [0.0, "#0a1a3a"],
-    [0.1, "#0d2a5c"],
-    [0.2, "#1a4080"],
-    [0.3, "#1a5070"],
-    [0.4, "#1a6050"],
-    [0.5, "#2a7040"],
-    [0.6, "#3a8035"],
-    [0.7, "#5a9040"],
-    [0.8, "#7a9050"],
-    [0.9, "#8a7040"],
-    [1.0, "#f0f0f0"],
+    [0.00, "#050d1a"],
+    [0.05, "#0a1a3a"],
+    [0.10, "#0d2a5c"],
+    [0.15, "#10367a"],
+    [0.20, "#1a4a8a"],
+    [0.25, "#1a5878"],
+    [0.30, "#1a6050"],
+    [0.35, "#1a6838"],
+    [0.40, "#227530"],
+    [0.45, "#2a802e"],
+    [0.50, "#388a35"],
+    [0.55, "#4a933a"],
+    [0.60, "#5a9a40"],
+    [0.65, "#6a9548"],
+    [0.70, "#7a8d50"],
+    [0.75, "#8a8050"],
+    [0.80, "#9a7848"],
+    [0.85, "#c0c8d0"],
+    [0.90, "#d8dfe8"],
+    [0.95, "#e8eef4"],
+    [1.00, "#f4f8fc"],
 ]
 
 
@@ -158,19 +191,32 @@ def create_orbit_figure(
 ) -> go.Figure:
     fig = go.Figure()
 
-    ex, ey, ez = create_earth_sphere(70)
-    surface_color = _earth_surface_color(70)
+    n_pts = 90
+    ex, ey, ez = create_earth_sphere(n_pts)
+    surface_color = _earth_surface_color(n_pts)
 
     fig.add_trace(go.Surface(
         x=ex, y=ey, z=ez,
         surfacecolor=surface_color,
         colorscale=EARTH_COLORSCALE,
         showscale=False,
-        opacity=0.95,
+        opacity=0.97,
         name="Earth",
         hoverinfo="skip",
-        lighting=dict(ambient=0.5, diffuse=0.6, specular=0.15, roughness=0.8),
-        lightposition=dict(x=10000, y=10000, z=10000),
+        lighting=dict(ambient=0.45, diffuse=0.65, specular=0.2, roughness=0.7, fresnel=0.15),
+        lightposition=dict(x=15000, y=10000, z=12000),
+    ))
+
+    ax, ay, az = create_atmosphere_sphere(scale=1.02, n_points=40)
+    fig.add_trace(go.Surface(
+        x=ax, y=ay, z=az,
+        surfacecolor=np.ones((40, 40)),
+        colorscale=[[0, "rgba(60,160,255,0.0)"], [1, "rgba(60,160,255,0.06)"]],
+        showscale=False,
+        opacity=0.15,
+        name="Atmosphere",
+        hoverinfo="skip",
+        lighting=dict(ambient=1.0, diffuse=0.0, specular=0.0),
     ))
 
     if events_df is not None and len(events_df) > 0:
@@ -407,16 +453,25 @@ def create_conjunction_detail_figure(
     except (ValueError, ZeroDivisionError):
         pass
 
-    ex, ey, ez = create_earth_sphere(50)
-    surface_color = _earth_surface_color(50)
+    n_detail = 80
+    ex, ey, ez = create_earth_sphere(n_detail)
+    surface_color = _earth_surface_color(n_detail)
     fig.add_trace(go.Surface(
         x=ex, y=ey, z=ez,
         surfacecolor=surface_color,
         colorscale=EARTH_COLORSCALE,
-        showscale=False, opacity=0.92,
+        showscale=False, opacity=0.95,
         hoverinfo="skip",
-        lighting=dict(ambient=0.5, diffuse=0.6, specular=0.15, roughness=0.8),
-        lightposition=dict(x=10000, y=10000, z=10000),
+        lighting=dict(ambient=0.45, diffuse=0.65, specular=0.2, roughness=0.7, fresnel=0.15),
+        lightposition=dict(x=15000, y=10000, z=12000),
+    ))
+    ax, ay, az = create_atmosphere_sphere(scale=1.02, n_points=36)
+    fig.add_trace(go.Surface(
+        x=ax, y=ay, z=az,
+        surfacecolor=np.ones((36, 36)),
+        colorscale=[[0, "rgba(60,160,255,0.0)"], [1, "rgba(60,160,255,0.06)"]],
+        showscale=False, opacity=0.12,
+        hoverinfo="skip", lighting=dict(ambient=1.0, diffuse=0.0, specular=0.0),
     ))
 
     bg = "#0E1117" if dark_theme else "#FFFFFF"
@@ -706,16 +761,17 @@ def create_cdm_3d_simulation(
     fig.add_trace(_make_starfield())
 
     # [1] Earth
-    ex, ey, ez = create_earth_sphere(70)
-    surface_color = _earth_surface_color(70)
+    n_anim = 90
+    ex, ey, ez = create_earth_sphere(n_anim)
+    surface_color = _earth_surface_color(n_anim)
     fig.add_trace(go.Surface(
         x=ex, y=ey, z=ez,
         surfacecolor=surface_color,
         colorscale=EARTH_COLORSCALE,
-        showscale=False, opacity=0.95,
+        showscale=False, opacity=0.97,
         name="Earth", hoverinfo="skip",
-        lighting=dict(ambient=0.5, diffuse=0.6, specular=0.15, roughness=0.8),
-        lightposition=dict(x=10000, y=10000, z=10000),
+        lighting=dict(ambient=0.45, diffuse=0.65, specular=0.2, roughness=0.7, fresnel=0.15),
+        lightposition=dict(x=15000, y=10000, z=12000),
     ))
 
     # [2] target orbit path
