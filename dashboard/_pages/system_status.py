@@ -2,12 +2,9 @@
 
 import datetime
 import importlib
-import os
 import platform
-import sys
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
@@ -413,7 +410,7 @@ def render_system_status():
     data_path = DATA_DIR / "train_data.csv"
     if data_path.exists():
         try:
-            n_rows = sum(1 for _ in open(data_path)) - 1
+            n_rows = sum(1 for _ in open(data_path, encoding="utf-8")) - 1
         except Exception:
             n_rows = 0
     else:

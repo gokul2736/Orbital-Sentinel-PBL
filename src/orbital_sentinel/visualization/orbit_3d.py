@@ -836,8 +836,8 @@ def create_cdm_3d_simulation(
         t_trail = t_positions[trail_start:i + 1]
         c_trail = c_positions[trail_start:i + 1]
 
-        is_tca = (i == n_frames - 1)
-        near_tca = (i >= n_frames - 3)
+        is_tca = i == n_frames - 1
+        near_tca = i >= n_frames - 3
 
         t_sec = time_labels[i]
         if t_sec <= -60:
