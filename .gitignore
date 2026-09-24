@@ -35,8 +35,10 @@ models/artifacts/
 .vscode/
 .idea/
 
-# Claude Code
+# IDE / tool config
 .claude/
+CLAUDE.md
+redme.pdf
 
 # Temporary / archive
 _archive/
