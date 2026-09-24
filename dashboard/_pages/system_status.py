@@ -2,6 +2,7 @@
 
 import datetime
 import importlib
+import json
 import platform
 from pathlib import Path
 
@@ -331,26 +332,91 @@ def render_system_status():
     # ──────────────────────────────────────────────────────────────────
     st.markdown("#### Model Registry")
     st.markdown(
-        '<p style="color:#6e7d8f; font-size:0.8rem;">Serialised model artifacts in models_saved/</p>',
+        '<p style="color:#6e7d8f; font-size:0.8rem;">Trained model artifacts and performance metrics</p>',
         unsafe_allow_html=True,
     )
 
+    metrics_path = MODELS_DIR / "model_metrics.json"
+    model_metrics = {}
+    if metrics_path.exists():
+        try:
+            with open(metrics_path, encoding="utf-8") as mf:
+                model_metrics = json.load(mf)
+        except Exception:
+            model_metrics = {}
+
     if MODELS_DIR.exists():
-        joblib_files = sorted(MODELS_DIR.glob("*.joblib"))
+        joblib_files = sorted(MODELS_DIR.glob("*_model.joblib"))
         if joblib_files:
             rows = []
             for f in joblib_files:
                 stat = f.stat()
+                name = f.stem.replace("_model", "")
+                m = model_metrics.get(name, {})
                 rows.append({
-                    "Model": f.stem.replace("_model", "").replace("_", " ").title(),
-                    "Filename": f.name,
+                    "Model": name,
                     "Size": _fmt_bytes(stat.st_size),
-                    "Modified": datetime.datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d %H:%M"),
+                    "R²": m.get("r2", "—"),
+                    "RMSE": m.get("rmse", "—"),
+                    "MAE": m.get("mae", "—"),
+                    "Accuracy": m.get("accuracy", "—"),
+                    "F1": m.get("f1", "—"),
+                    "Status": "LOADED",
                 })
             st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+
+            if model_metrics:
+                st.markdown(
+                    '<p style="color:#6e7d8f; font-size:0.75rem; margin-top:8px;">'
+                    "Detailed model performance comparison</p>",
+                    unsafe_allow_html=True,
+                )
+                mr1, mr2, mr3, mr4 = st.columns(4)
+                best_name = max(model_metrics, key=lambda k: model_metrics[k].get("r2", 0))
+                best = model_metrics[best_name]
+                with mr1:
+                    st.markdown(
+                        _metric_card("Best Model", best_name, "cyan"),
+                        unsafe_allow_html=True,
+                    )
+                with mr2:
+                    st.markdown(
+                        _metric_card("Best R²", f"{best.get('r2', 0):.4f}", "green"),
+                        unsafe_allow_html=True,
+                    )
+                with mr3:
+                    st.markdown(
+                        _metric_card("Best F1", f"{best.get('f1', 0):.4f}", "purple"),
+                        unsafe_allow_html=True,
+                    )
+                with mr4:
+                    st.markdown(
+                        _metric_card("AUC (High-Risk)", f"{best.get('auc', 0):.4f}", "amber"),
+                        unsafe_allow_html=True,
+                    )
+
+                with st.expander("Full Metrics Table"):
+                    full_rows = []
+                    for mname, mvals in model_metrics.items():
+                        full_rows.append({
+                            "Model": mname,
+                            "RMSE": mvals.get("rmse"),
+                            "MAE": mvals.get("mae"),
+                            "R²": mvals.get("r2"),
+                            "Correlation": mvals.get("correlation"),
+                            "Accuracy": mvals.get("accuracy"),
+                            "F1 (weighted)": mvals.get("f1"),
+                            "Precision": mvals.get("precision"),
+                            "Recall": mvals.get("recall"),
+                            "High-Risk F1": mvals.get("high_risk_f1"),
+                            "AUC": mvals.get("auc"),
+                            "Train Time (s)": mvals.get("train_time_s"),
+                            "Size (KB)": mvals.get("model_size_kb"),
+                        })
+                    st.dataframe(pd.DataFrame(full_rows), use_container_width=True, hide_index=True)
         else:
             st.markdown(
-                _alert_card("No Models", "No .joblib files found in models_saved/", "warning"),
+                _alert_card("No Models", "No model files found in models_saved/", "warning"),
                 unsafe_allow_html=True,
             )
     else:
