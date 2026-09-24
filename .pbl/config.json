@@ -1,0 +1,9 @@
+{
+  "project": "orbital-sentinel",
+  "team": ["gokul2736"],
+  "semester": "Fall-2026",
+  "deadline": "2026-10-15",
+  "min_pylint": 8.5,
+  "proof_dir": "proofs/",
+  "language": "python"
+}
