@@ -272,87 +272,26 @@ div[data-testid="stSidebar"] .stRadio > div > label:has(input:checked) {
 div[data-testid="stSidebar"] .stRadio > div > label > div:first-child {
     display: none !important;
 }
-/* ── Sidebar toggle controls ── */
-/* Smooth slide */
+/* ── Sidebar: always visible, no collapse ── */
 div[data-testid="stSidebar"],
-section[data-testid="stSidebar"] {
-    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), margin-left 0.3s ease !important;
-    z-index: 999 !important;
-}
+section[data-testid="stSidebar"],
 div[data-testid="stSidebar"][aria-expanded="true"],
-section[data-testid="stSidebar"][aria-expanded="true"] {
+div[data-testid="stSidebar"][aria-expanded="false"],
+section[data-testid="stSidebar"][aria-expanded="true"],
+section[data-testid="stSidebar"][aria-expanded="false"] {
+    display: flex !important;
+    transform: none !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    z-index: 999 !important;
     width: 280px !important;
     min-width: 260px !important;
+    margin-left: 0 !important;
 }
-/* Close button (X / < arrow) inside sidebar top — make it bright */
 button[data-testid="stSidebarCollapseButton"],
-div[data-testid="stSidebar"] button[kind="headerNoPadding"],
-section[data-testid="stSidebar"] header button {
-    color: var(--accent-cyan) !important;
-    background: rgba(0,212,255,0.12) !important;
-    border: 1px solid rgba(0,212,255,0.3) !important;
-    border-radius: 6px !important;
-    width: 32px !important;
-    height: 32px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-}
-button[data-testid="stSidebarCollapseButton"]:hover,
-div[data-testid="stSidebar"] button[kind="headerNoPadding"]:hover {
-    background: rgba(0,212,255,0.25) !important;
-    box-shadow: 0 0 12px rgba(0,212,255,0.3) !important;
-}
-/* Expand button (> arrow) when sidebar is collapsed — bright cyan pill */
-div[data-testid="stSidebarCollapsedControl"],
-div[data-testid="collapsedControl"] {
-    display: flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    z-index: 999999 !important;
-    position: fixed !important;
-    top: 14px !important;
-    left: 14px !important;
-}
-div[data-testid="stSidebarCollapsedControl"] button,
-div[data-testid="collapsedControl"] button {
-    color: #06090f !important;
-    background: #00D4FF !important;
-    border: none !important;
-    border-radius: 8px !important;
-    padding: 10px 14px !important;
-    font-size: 1.2rem !important;
-    font-weight: bold !important;
-    box-shadow: 0 4px 20px rgba(0,212,255,0.5) !important;
-    cursor: pointer !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-div[data-testid="stSidebarCollapsedControl"] button:hover,
-div[data-testid="collapsedControl"] button:hover {
-    background: #00E87B !important;
-    box-shadow: 0 4px 24px rgba(0,232,123,0.6) !important;
-    transform: scale(1.08) !important;
-}
-/* Make sure header doesn't hide sidebar controls */
-header[data-testid="stHeader"] button {
-    opacity: 1 !important;
-    visibility: visible !important;
-}
-/* All SVG icons in sidebar controls — force visible */
-button[data-testid="stSidebarCollapseButton"] svg,
-div[data-testid="stSidebarCollapsedControl"] svg,
-div[data-testid="collapsedControl"] svg {
-    fill: currentColor !important;
-    stroke: currentColor !important;
-    opacity: 1 !important;
-    width: 20px !important;
-    height: 20px !important;
+div[data-testid="stSidebarCollapsedControl"] {
+    display: none !important;
 }
 
 /* ── Tabs ── */
