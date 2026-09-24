@@ -437,7 +437,7 @@ def render_orbital_tracker():
             size=5, color=dist_frames,
             colorscale=[[0, "#FF2D55"], [0.5, "#FFAA00"], [1, "#00E87B"]],
             showscale=True,
-            colorbar=dict(title="km", tickfont=dict(color="#6e7d8f"), titlefont=dict(color="#6e7d8f")),
+            colorbar=dict(title=dict(text="km", font=dict(color="#6e7d8f")), tickfont=dict(color="#6e7d8f")),
         ),
         hovertemplate="B_T: %{x:.1f} km<br>B_R: %{y:.1f} km<extra></extra>",
         name="Approach trajectory",

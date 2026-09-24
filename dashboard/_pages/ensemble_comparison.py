@@ -123,7 +123,7 @@ def _render_radar_chart(df):
         fig.add_trace(go.Scatterpolar(
             r=vals, theta=cats, name=short,
             fill="toself",
-            fillcolor=color.replace(")", ",0.08)").replace("rgb", "rgba") if "rgb" in color else color + "14",
+            fillcolor=color.replace(")", ",0.08)").replace("rgb", "rgba") if "rgb" in color else f"rgba({int(color[1:3], 16)}, {int(color[3:5], 16)}, {int(color[5:7], 16)}, 0.08)" if color.startswith("#") else color,
             line=dict(color=color, width=2),
             marker=dict(size=5),
         ))

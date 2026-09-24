@@ -272,47 +272,87 @@ div[data-testid="stSidebar"] .stRadio > div > label:has(input:checked) {
 div[data-testid="stSidebar"] .stRadio > div > label > div:first-child {
     display: none !important;
 }
-/* Sidebar collapse button styling */
+/* ── Sidebar toggle controls ── */
+/* Smooth slide */
+div[data-testid="stSidebar"],
+section[data-testid="stSidebar"] {
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), margin-left 0.3s ease !important;
+    z-index: 999 !important;
+}
+div[data-testid="stSidebar"][aria-expanded="true"],
+section[data-testid="stSidebar"][aria-expanded="true"] {
+    width: 280px !important;
+    min-width: 260px !important;
+}
+/* Close button (X / < arrow) inside sidebar top — make it bright */
 button[data-testid="stSidebarCollapseButton"],
-div[data-testid="stSidebarCollapsedControl"] button {
+div[data-testid="stSidebar"] button[kind="headerNoPadding"],
+section[data-testid="stSidebar"] header button {
     color: var(--accent-cyan) !important;
-    background: rgba(0,212,255,0.08) !important;
-    border: 1px solid rgba(0,212,255,0.2) !important;
+    background: rgba(0,212,255,0.12) !important;
+    border: 1px solid rgba(0,212,255,0.3) !important;
     border-radius: 6px !important;
-}
-/* Force sidebar always visible on desktop */
-@media (min-width: 768px) {
-    div[data-testid="stSidebar"] {
-        display: block !important;
-        transform: none !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        position: relative !important;
-        z-index: 999 !important;
-    }
-    section[data-testid="stSidebar"] {
-        display: flex !important;
-        transform: none !important;
-        visibility: visible !important;
-        width: 280px !important;
-        min-width: 260px !important;
-    }
-    div[data-testid="stSidebarCollapsedControl"] {
-        display: none !important;
-    }
-}
-/* Also ensure collapsed state is overridden */
-div[data-testid="stSidebar"][aria-expanded="false"] {
-    display: block !important;
-    transform: none !important;
-    margin-left: 0 !important;
-    width: 280px !important;
-}
-section[data-testid="stSidebar"][aria-expanded="false"] {
+    width: 32px !important;
+    height: 32px !important;
     display: flex !important;
-    transform: none !important;
-    margin-left: 0 !important;
-    width: 280px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+button[data-testid="stSidebarCollapseButton"]:hover,
+div[data-testid="stSidebar"] button[kind="headerNoPadding"]:hover {
+    background: rgba(0,212,255,0.25) !important;
+    box-shadow: 0 0 12px rgba(0,212,255,0.3) !important;
+}
+/* Expand button (> arrow) when sidebar is collapsed — bright cyan pill */
+div[data-testid="stSidebarCollapsedControl"],
+div[data-testid="collapsedControl"] {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 999999 !important;
+    position: fixed !important;
+    top: 14px !important;
+    left: 14px !important;
+}
+div[data-testid="stSidebarCollapsedControl"] button,
+div[data-testid="collapsedControl"] button {
+    color: #06090f !important;
+    background: #00D4FF !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 10px 14px !important;
+    font-size: 1.2rem !important;
+    font-weight: bold !important;
+    box-shadow: 0 4px 20px rgba(0,212,255,0.5) !important;
+    cursor: pointer !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+div[data-testid="stSidebarCollapsedControl"] button:hover,
+div[data-testid="collapsedControl"] button:hover {
+    background: #00E87B !important;
+    box-shadow: 0 4px 24px rgba(0,232,123,0.6) !important;
+    transform: scale(1.08) !important;
+}
+/* Make sure header doesn't hide sidebar controls */
+header[data-testid="stHeader"] button {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+/* All SVG icons in sidebar controls — force visible */
+button[data-testid="stSidebarCollapseButton"] svg,
+div[data-testid="stSidebarCollapsedControl"] svg,
+div[data-testid="collapsedControl"] svg {
+    fill: currentColor !important;
+    stroke: currentColor !important;
+    opacity: 1 !important;
+    width: 20px !important;
+    height: 20px !important;
 }
 
 /* ── Tabs ── */
@@ -2496,7 +2536,7 @@ elif page == "Live CDM Feed":
 # ===================================================================
 
 elif page == "Data Explorer":
-    st.markdown('<p style="color:#7a8899; font-size:0.85rem; margin-bottom:16px;">Browse the ESA Kelvins conjunction dataset — 162K real CDMs</p>',
+    st.markdown('<p class="page-subtitle">ESA Kelvins Conjunction Dataset &mdash; exploratory analysis of 162K real CDMs across 102 features</p>',
                 unsafe_allow_html=True)
 
     df = load_dataset()
@@ -2506,36 +2546,56 @@ elif page == "Data Explorer":
 
     results = load_pipeline_results()
 
-    # Dataset overview
-    st.markdown("#### Dataset Overview")
+    # ── Overview metrics ──
     o1, o2, o3, o4, o5 = st.columns(5)
+    n_events = df["event_id"].nunique() if "event_id" in df.columns else 0
+    mem_mb = df.memory_usage(deep=True).sum() / 1024 / 1024
+    null_pct = df.isnull().mean().mean() * 100
     with o1:
-        st.markdown(metric_card("Total Rows", f"{len(df):,}", "cyan"), unsafe_allow_html=True)
+        st.markdown(metric_card("CDM Records", f"{len(df):,}", "cyan"), unsafe_allow_html=True)
     with o2:
-        st.markdown(metric_card("Columns", str(df.shape[1]), "purple"), unsafe_allow_html=True)
+        st.markdown(metric_card("Features", str(df.shape[1]), "purple"), unsafe_allow_html=True)
     with o3:
-        n_events = df["event_id"].nunique() if "event_id" in df.columns else 0
-        st.markdown(metric_card("Events", f"{n_events:,}", "green"), unsafe_allow_html=True)
+        st.markdown(metric_card("Unique Events", f"{n_events:,}", "green"), unsafe_allow_html=True)
     with o4:
-        mem_mb = df.memory_usage(deep=True).sum() / 1024 / 1024
-        st.markdown(metric_card("Memory", f"{mem_mb:.1f} MB", "amber"), unsafe_allow_html=True)
+        st.markdown(metric_card("In-Memory", f"{mem_mb:.1f} MB", "amber"), unsafe_allow_html=True)
     with o5:
-        null_pct = df.isnull().mean().mean() * 100
-        st.markdown(metric_card("Null %", f"{null_pct:.2f}%", "green" if null_pct < 5 else "red"),
+        st.markdown(metric_card("Missing Data", f"{null_pct:.2f}%", "green" if null_pct < 5 else "red"),
                     unsafe_allow_html=True)
+
+    # ── Risk tier breakdown bar ──
+    if "risk" in df.columns:
+        _rc = df["risk"]
+        _high = int((_rc > -5).sum())
+        _med = int(((_rc > -7) & (_rc <= -5)).sum())
+        _low = int(((_rc > -15) & (_rc <= -7)).sum())
+        _neg = int((_rc <= -15).sum())
+        _total = max(len(_rc), 1)
+        st.markdown(f"""
+        <div style="display:flex; height:8px; border-radius:4px; overflow:hidden; margin:8px 0 18px 0;
+                    border:1px solid rgba(255,255,255,0.04);">
+            <div style="width:{_high/_total*100:.1f}%; background:#FF2D55;" title="HIGH: {_high:,}"></div>
+            <div style="width:{_med/_total*100:.1f}%; background:#FFAA00;" title="MEDIUM: {_med:,}"></div>
+            <div style="width:{_low/_total*100:.1f}%; background:#00D4FF;" title="LOW: {_low:,}"></div>
+            <div style="width:{_neg/_total*100:.1f}%; background:#00E87B;" title="NEGLIGIBLE: {_neg:,}"></div>
+        </div>
+        <div style="display:flex; gap:20px; justify-content:center; margin-bottom:10px;">
+            <span style="font-size:0.72rem; color:#FF2D55;">HIGH {_high:,}</span>
+            <span style="font-size:0.72rem; color:#FFAA00;">MEDIUM {_med:,}</span>
+            <span style="font-size:0.72rem; color:#00D4FF;">LOW {_low:,}</span>
+            <span style="font-size:0.72rem; color:#00E87B;">NEGLIGIBLE {_neg:,}</span>
+        </div>
+        """, unsafe_allow_html=True)
 
     st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
 
     exp_tab1, exp_tab2, exp_tab3, exp_tab4 = st.tabs([
-        "Sample Rows", "Column Stats", "Distributions", "Data Quality",
+        "Records", "Statistics", "Distributions", "Quality & Correlation",
     ])
 
     with exp_tab1:
-        st.markdown("#### Sample CDM Records")
-        st.markdown('<p style="color:#6e7d8f;">Each row is a real Conjunction Data Message from ESA</p>',
-                    unsafe_allow_html=True)
-
-        sample_mode = st.radio("Sample", ["First 50", "Random 50", "High-risk only"], horizontal=True, key="exp_sample")
+        sample_mode = st.radio("View", ["First 50", "Random 50", "High-risk only"],
+                               horizontal=True, key="exp_sample")
         if sample_mode == "First 50":
             sample = df.head(50)
         elif sample_mode == "Random 50":
@@ -2546,9 +2606,9 @@ elif page == "Data Explorer":
         key_cols = ["event_id", "time_to_tca", "risk", "miss_distance", "relative_speed",
                     "t_j2k_sma", "t_j2k_inc", "c_j2k_sma", "c_j2k_inc", "c_object_type"]
         avail_cols = [c for c in key_cols if c in sample.columns]
-        st.dataframe(sample[avail_cols], use_container_width=True, hide_index=True, height=400)
+        st.dataframe(sample[avail_cols], use_container_width=True, hide_index=True, height=420)
 
-        with st.expander("View all columns for first row"):
+        with st.expander("Inspect all 102 columns (first row)"):
             first_row = df.iloc[0]
             col_data = pd.DataFrame({
                 "Column": first_row.index,
@@ -2558,14 +2618,11 @@ elif page == "Data Explorer":
             st.dataframe(col_data, use_container_width=True, hide_index=True, height=400)
 
     with exp_tab2:
-        st.markdown("#### Column Statistics")
-        st.markdown('<p style="color:#6e7d8f;">Descriptive statistics for selected numeric columns</p>',
-                    unsafe_allow_html=True)
-
         numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
         selected_cols = st.multiselect(
-            "Select columns", numeric_cols,
-            default=["risk", "miss_distance", "relative_speed", "time_to_tca", "t_j2k_sma"][:min(5, len(numeric_cols))],
+            "Columns", numeric_cols,
+            default=[c for c in ["risk", "miss_distance", "relative_speed", "time_to_tca", "t_j2k_sma"]
+                     if c in numeric_cols],
             key="exp_cols",
         )
 
@@ -2581,19 +2638,15 @@ elif page == "Data Explorer":
             )
 
     with exp_tab3:
-        st.markdown("#### Feature Distributions")
-        st.markdown('<p style="color:#6e7d8f;">Histogram and box plot for any numeric feature</p>',
-                    unsafe_allow_html=True)
-
         dist_col = st.selectbox(
-            "Select column",
-            ["risk", "miss_distance", "relative_speed", "time_to_tca",
-             "t_j2k_sma", "t_j2k_ecc", "t_j2k_inc", "mahalanobis_distance",
-             "c_j2k_sma", "c_j2k_ecc", "c_j2k_inc"],
+            "Feature",
+            [c for c in ["risk", "miss_distance", "relative_speed", "time_to_tca",
+                         "t_j2k_sma", "t_j2k_ecc", "t_j2k_inc", "mahalanobis_distance",
+                         "c_j2k_sma", "c_j2k_ecc", "c_j2k_inc"] if c in df.columns],
             key="exp_dist",
         )
 
-        if dist_col in df.columns:
+        if dist_col and dist_col in df.columns:
             col_data = df[dist_col].dropna()
 
             d1, d2, d3, d4 = st.columns(4)
@@ -2604,48 +2657,39 @@ elif page == "Data Explorer":
             with d3:
                 st.markdown(metric_card("Std Dev", f"{col_data.std():.4f}"), unsafe_allow_html=True)
             with d4:
-                st.markdown(metric_card("Range", f"{col_data.min():.2f} to {col_data.max():.2f}"), unsafe_allow_html=True)
+                skew_val = col_data.skew()
+                st.markdown(metric_card("Skewness", f"{skew_val:.3f}"), unsafe_allow_html=True)
 
-            fig_dist = go.Figure()
-            fig_dist.add_trace(go.Histogram(
+            from plotly.subplots import make_subplots
+            fig_combo = make_subplots(rows=2, cols=1, row_heights=[0.75, 0.25],
+                                      shared_xaxes=True, vertical_spacing=0.03)
+            fig_combo.add_trace(go.Histogram(
                 x=col_data, nbinsx=80,
-                marker_color="#00D4FF", opacity=0.8,
+                marker_color="rgba(0,212,255,0.7)",
                 hovertemplate=f"{dist_col}: " + "%{x:.2f}<br>Count: %{y:,}<extra></extra>",
-            ))
-            fig_dist.update_layout(
-                xaxis_title=dist_col, yaxis_title="Count",
-                paper_bgcolor="#06090f", plot_bgcolor="#06090f",
-                font=dict(color="#E8EDF4", family="Inter"),
-                xaxis=dict(gridcolor="#111820"), yaxis=dict(gridcolor="#111820"),
-                margin=dict(l=50, r=20, t=10, b=50), height=350,
-            )
-            st.plotly_chart(fig_dist, use_container_width=True)
-
-            # Box plot
-            fig_box = go.Figure()
-            fig_box.add_trace(go.Box(
+                name="Distribution",
+            ), row=1, col=1)
+            fig_combo.add_trace(go.Box(
                 x=col_data, name=dist_col,
                 marker_color="#7C5CFC", line_color="#7C5CFC",
-                boxmean="sd",
-            ))
-            fig_box.update_layout(
+                boxmean="sd", showlegend=False,
+            ), row=2, col=1)
+            fig_combo.update_layout(
                 paper_bgcolor="#06090f", plot_bgcolor="#06090f",
                 font=dict(color="#E8EDF4", family="Inter"),
-                xaxis=dict(gridcolor="#111820"), yaxis=dict(gridcolor="#111820"),
-                margin=dict(l=50, r=20, t=10, b=40), height=200,
+                xaxis2=dict(gridcolor="#111820", title=dist_col),
+                yaxis=dict(gridcolor="#111820", title="Count"),
+                yaxis2=dict(gridcolor="#111820"),
+                xaxis=dict(gridcolor="#111820"),
+                margin=dict(l=50, r=20, t=10, b=50), height=440,
+                showlegend=False,
             )
-            st.plotly_chart(fig_box, use_container_width=True)
-        else:
-            st.warning(f"Column '{dist_col}' not found in dataset.")
+            st.plotly_chart(fig_combo, use_container_width=True)
 
     with exp_tab4:
-        st.markdown("#### Data Quality Assessment")
-        st.markdown('<p style="color:#6e7d8f;">Validation results, outlier detection, and event structure</p>',
-                    unsafe_allow_html=True)
-
+        # Data quality
         if results and "validation" in results:
             quality = results["validation"].get("quality", {})
-
             q1, q2, q3, q4 = st.columns(4)
             with q1:
                 st.markdown(metric_card("Total Rows", f"{quality.get('total_rows', len(df)):,}", "cyan"),
@@ -2655,72 +2699,57 @@ elif page == "Data Explorer":
                             unsafe_allow_html=True)
             with q3:
                 neg_miss = quality.get("negative_miss_distance_count", 0)
-                st.markdown(metric_card("Neg Miss Dist", str(neg_miss), "green" if neg_miss == 0 else "red"),
-                            unsafe_allow_html=True)
+                st.markdown(metric_card("Neg Miss Dist", str(neg_miss),
+                                        "green" if neg_miss == 0 else "red"), unsafe_allow_html=True)
             with q4:
                 neg_speed = quality.get("negative_speed_count", 0)
-                st.markdown(metric_card("Neg Speed", str(neg_speed), "green" if neg_speed == 0 else "red"),
-                            unsafe_allow_html=True)
+                st.markdown(metric_card("Neg Speed", str(neg_speed),
+                                        "green" if neg_speed == 0 else "red"), unsafe_allow_html=True)
 
             outlier_cols = quality.get("outlier_columns", [])
             if outlier_cols:
                 st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
-                st.markdown("#### Columns with Outliers")
-                st.markdown('<p style="color:#6e7d8f;">Columns where values exceed 3 standard deviations</p>',
+                st.markdown("**Outlier Columns** (> 3 std dev)")
+                oc_text = " &nbsp;&middot;&nbsp; ".join(
+                    f'<span style="color:#FFAA00;font-family:JetBrains Mono,monospace;font-size:0.78rem;">'
+                    f'{c}</span>' for c in outlier_cols)
+                st.markdown(f'<div style="padding:10px 0;">{oc_text}</div>', unsafe_allow_html=True)
+
+        # CDMs per event
+        if "event_id" in df.columns:
+            st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
+            cdm_counts = df["event_id"].value_counts()
+            cq1, cq2, cq3, cq4 = st.columns(4)
+            with cq1:
+                st.markdown(metric_card("Mean CDMs/Event", f"{cdm_counts.mean():.1f}", "cyan"),
+                            unsafe_allow_html=True)
+            with cq2:
+                st.markdown(metric_card("Median", f"{cdm_counts.median():.0f}", "green"),
+                            unsafe_allow_html=True)
+            with cq3:
+                st.markdown(metric_card("Max CDMs", str(cdm_counts.max()), "amber"),
+                            unsafe_allow_html=True)
+            with cq4:
+                single = (cdm_counts == 1).sum()
+                st.markdown(metric_card("Single-CDM Events", f"{single:,}", "purple"),
                             unsafe_allow_html=True)
 
-                n_per_row = 5
-                for row_start in range(0, len(outlier_cols), n_per_row):
-                    row_cols = outlier_cols[row_start:row_start + n_per_row]
-                    cols = st.columns(n_per_row)
-                    for j, col_name in enumerate(row_cols):
-                        with cols[j]:
-                            st.markdown(f"""
-                            <div style="background:#1C2333; border:1px solid #FFAA00; border-radius:8px;
-                                        padding:8px 12px; text-align:center; margin-bottom:8px;">
-                                <span style="color:#FFAA00; font-size:0.8rem; font-family:'JetBrains Mono';">
-                                    {col_name}
-                                </span>
-                            </div>
-                            """, unsafe_allow_html=True)
-
-        # CDMs per event distribution
-        st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
-        st.markdown("#### CDMs per Event")
-        st.markdown('<p style="color:#6e7d8f;">Distribution of Conjunction Data Messages across events</p>',
-                    unsafe_allow_html=True)
-        if "event_id" in df.columns:
-            cdm_counts = df["event_id"].value_counts()
             fig_cdm = go.Figure()
             fig_cdm.add_trace(go.Histogram(
                 x=cdm_counts.values, nbinsx=50,
-                marker_color="#00E87B", opacity=0.8,
+                marker_color="rgba(0,232,123,0.7)",
             ))
             fig_cdm.update_layout(
-                xaxis_title="Number of CDMs per Event", yaxis_title="Number of Events",
+                xaxis_title="CDMs per Event", yaxis_title="Number of Events",
                 paper_bgcolor="#06090f", plot_bgcolor="#06090f",
                 font=dict(color="#E8EDF4", family="Inter"),
                 xaxis=dict(gridcolor="#111820"), yaxis=dict(gridcolor="#111820"),
-                margin=dict(l=50, r=20, t=10, b=50), height=300,
+                margin=dict(l=50, r=20, t=10, b=50), height=280,
             )
             st.plotly_chart(fig_cdm, use_container_width=True)
 
-            cdm_q1, cdm_q2, cdm_q3, cdm_q4 = st.columns(4)
-            with cdm_q1:
-                st.markdown(metric_card("Mean CDMs/Event", f"{cdm_counts.mean():.1f}", "cyan"), unsafe_allow_html=True)
-            with cdm_q2:
-                st.markdown(metric_card("Median", f"{cdm_counts.median():.0f}", "green"), unsafe_allow_html=True)
-            with cdm_q3:
-                st.markdown(metric_card("Max CDMs", str(cdm_counts.max()), "amber"), unsafe_allow_html=True)
-            with cdm_q4:
-                single = (cdm_counts == 1).sum()
-                st.markdown(metric_card("Single-CDM Events", f"{single:,}", "purple"), unsafe_allow_html=True)
-
-        # Feature correlation matrix
+        # Feature correlation heatmap
         st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
-        st.markdown("#### Feature Correlation (Key Features)")
-        st.markdown('<p style="color:#6e7d8f;">Pearson correlation between key numeric features</p>',
-                    unsafe_allow_html=True)
         corr_cols = ["risk", "miss_distance", "relative_speed", "time_to_tca",
                      "t_j2k_sma", "t_j2k_ecc", "t_j2k_inc", "mahalanobis_distance"]
         avail_corr = [c for c in corr_cols if c in df.columns]
@@ -2738,14 +2767,14 @@ elif page == "Data Explorer":
                 texttemplate="%{text}",
                 textfont=dict(size=11, color="#E8EDF4"),
                 colorbar=dict(
-                    title="r", tickfont=dict(color="#6e7d8f"),
-                    titlefont=dict(color="#6e7d8f"),
+                    title=dict(text="r", font=dict(color="#6e7d8f")),
+                    tickfont=dict(color="#6e7d8f"),
                 ),
             ))
             fig_corr.update_layout(
                 paper_bgcolor="#06090f", plot_bgcolor="#06090f",
                 font=dict(color="#E8EDF4", family="Inter"),
-                margin=dict(l=140, r=30, t=10, b=140), height=480,
+                margin=dict(l=140, r=30, t=10, b=140), height=460,
                 xaxis=dict(tickangle=-40, tickfont=dict(size=11)),
                 yaxis=dict(tickfont=dict(size=11)),
             )
